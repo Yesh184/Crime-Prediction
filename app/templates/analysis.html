@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Analysis: Crime Prediction</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="node_modules/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="node_modules/simple-line-icons/css/simple-line-icons.css">
+  <link rel="stylesheet" href="node_modules/flag-icon-css/css/flag-icon.min.css">
+  <!-- endinject -->
+  <!-- plugin css for this page -->
+  <link rel="stylesheet" href="node_modules/chartist/dist/chartist.min.css" />
+  <link rel="stylesheet" href="node_modules/jvectormap/jquery-jvectormap.css" />
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="/static/images/favicon.png" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+<!-- form style -->
+<style>
+.nav
+tr td {
+font-size:20px;
+padding: 3px;
+color: 323d3d;
+font-family: 'Montserrat', sans-serif; ;
+}
+.nav input[type="text"],input[type="date"]{
+	width:100%;
+	border-style: block;
+	border-color: #aeaeae;
+	border-width: 0.5px;
+	border-radius: 5px;
+	font-size: 17px;
+	padding: 5px;
+	color:  #6569df;
+}
+.nav select {
+	width:100%;
+	border-bottom-color: #aeaeae;
+	border-width: 0.5px;
+	border-radius: 5px;
+	font-size: 17px;
+	padding: 7px;
+	color:  #6569df;
+}
+.nav input[type="submit"]{
+	width:40%;
+	border-style: none;
+	border-color: none;
+	border-radius: 4px;
+	font-size: 17px;
+	padding: 5px;
+}
+.nav input[type="submit"]:hover {
+    background-color: #4fc04d;
+   	color: white;
+}
+.graph
+{
+	padding-top: 30px;
+	padding-bottom: 50px;
+}
+.graph h2
+{
+	font-size: 30px;
+	font-family: Verdana;
+	font-weight: normal;
+	padding-bottom: 10px;
+}
+
+</style>
+
+</head>
+<body>
+  <div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper">
+        <a class="navbar-brand brand-logo" href="index.html"><img src="/static/images/logo.PNG" alt="logo"></a>
+        <a class="navbar-brand brand-logo-mini" href="index.html"><img src="/static/images/logo_mini.svg" alt="logo"></a>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center">
+        <p class="page-name d-none d-lg-block" style="font-family: Montserrat;font-size: 23px;font-weight:normal;color:#383737">Crime Prediction Using Neural Networks</p>
+        <ul class="navbar-nav ml-lg-auto">
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center ml-auto" type="button" data-toggle="offcanvas">
+          <span class="icon-menu icons"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <div class="row row-offcanvas row-offcanvas-right">
+        <!-- partial:partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item nav-category">
+              <span class="nav-link">GENERAL</span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/index">
+                <span class="menu-title">Dashboard</span>
+                <i class="icon-speedometer menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/graphs">
+                <span class="menu-title">Graphs</span>
+                <i class="icon-wrench menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/analysis">
+                <span class="menu-title">Analysis</span>
+                <i class="icon-layers menu-icon"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- partial -->
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-lg-12 grid-margin">
+              <div class="card overflow-hidden dashboard-curved-chart">
+                <div class="card-body mx-1">
+                  <h2 class="card-title border-bottom-1" style="font-family: Montserrat">Analysis</h2>
+                    <div id="chartLegend"></div>
+                    
+                    <div class="graph">
+                    	<center>
+                    	<img src="/static/images/bargraph.PNG">
+                    	</center>
+                    </div>
+                    
+
+                    <hr></hr>
+                    
+
+                    <div class="graph">
+                    	<center>
+                     	<img src="/static/images/analysis2.PNG">
+                     	</center>                   
+                    </div>
+                    
+
+                    <hr></hr>
+                    
+
+                    <div class="graph">
+                    	<center>                  		
+                    	<h2>Plotting points </h2>
+                     	<img src="/static/images/graph1.PNG">
+                     	</center>
+                    </div>
+                    <hr>
+
+
+                    <div class="graph">
+                    	<center>                		
+                    	<h2>Plotting points on map</h2>
+                     	<img src="/static/images/graph2.PNG">
+                     	</center>
+                    </div>
+                    
+
+                    <hr></hr>
+
+
+                    <div class="graph">
+                    	<center>                		
+                    	<h2>Highest to lowest occurances of crime in a year</h2>
+                     	<img src="/static/images/graph3.PNG">
+                     	</center>
+                    </div>
+                    	
+
+                    <hr></hr>	
+
+
+                    <div class="graph">
+                    	<center>	
+                    	<h2>title</h2>
+                     	<img src="/static/images/graph4.PNG" width="100%">
+                     	</center>
+                    </div>
+					
+
+					<hr></hr>
+                    
+
+                    <div class="graph">
+                    	<center>		
+                    	<h2>Distribution of the City-wide 6 Most Common Crimes in Each District</h2>
+                     	<img src="/static/images/graph51.PNG">
+                     	</center>
+                    </div>
+                    
+
+                    <hr></hr>
+
+
+                    <div class="graph">
+                    	<center>	
+                    	<h2>title</h2>
+                     	<img src="/static/images/graph6.PNG">
+                     	</center>
+                    </div>
+                    
+
+                    <hr></hr>
+
+
+                    <div class="graph">
+                    	<center> 		
+                    	<h2>Areawise occurances of crime</h2>
+                     	<img src="/static/images/graph7.PNG">
+                     	</center>
+                    </div>
+                    
+
+                    <hr></hr>
+
+                   
+                    <div class="graph">
+                    	<center> 		
+                    	<h2>DayOfWeek wise occcurances of crime</h2>
+                     	<img src="/static/images/graph8.PNG">
+                     	</center>
+                    </div>
+                    
+
+                    <hr></hr>
+
+                    
+                    <div class="graph">
+                    	<center>		
+                   		 <h2>title</h2>
+                     	<img src="/static/images/graph9.PNG">
+                     	</center>
+                    </div>
+                    
+
+                    <hr></hr>
+
+                    <div class="graph">
+                    	<center>		
+                    	<h2>title</h2>
+                     	<img src="/static/images/graph10.PNG">
+                     	</center>
+                    </div>
+                    
+
+                    <hr></hr>
+
+                    
+                  </div>
+              </div>
+            </div>
+          </div>
+          
+        
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+          <div class="container-fluid clearfix">
+            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2019 Crime Prediction Analysis</span>
+          </div>
+        </footer>
+        <!-- partial -->
+      </div>
+      <!-- row-offcanvas ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+
+  <!-- plugins:js -->
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page-->
+  <script src="node_modules/flot/jquery.flot.js"></script>
+  <script src="node_modules/flot/jquery.flot.resize.js"></script>
+  <script src="node_modules/flot.curvedlines/curvedLines.js"></script>
+  <!-- End plugin js for this page-->
+  <!-- inject:js -->
+  <script src="js/off-canvas.js"></script>
+  <script src="js/misc.js"></script>
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="js/dashboard.js"></script>
+  <!-- End custom js for this page-->
+
+
+</body>
+
+</html>

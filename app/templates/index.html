@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>Dashboard: Crime Prediction</title>
+      <link rel="stylesheet" href="node_modules/mdi/css/materialdesignicons.min.css">
+      <link rel="stylesheet" href="node_modules/simple-line-icons/css/simple-line-icons.css">
+      <link rel="stylesheet" href="node_modules/flag-icon-css/css/flag-icon.min.css">
+      <link rel="stylesheet" href="node_modules/chartist/dist/chartist.min.css" />
+      <link rel="stylesheet" href="node_modules/jvectormap/jquery-jvectormap.css" />
+      <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+      <link rel="shortcut icon" href="/static/images/favicon.png" />
+      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+      <style>
+              .nav
+              tr td {
+              font-size:17px;
+              padding: 3px;
+              color:#323d3d;
+              font-family: 'Montserrat', sans-serif; ;
+              }
+              .nav input[type="text"],input[type="date"]{
+              width:100%;
+              border-style: block;
+              border-color: #aeaeae;
+              border-width: 0.5px;
+              border-radius: 3px;
+              font-size: 17px;
+              padding: 5px;
+              color:  #4fc04d;
+              font-family: 'Montserrat', sans-serif; ;
+              }
+              .nav select {
+              width:400px;
+              border-bottom-color: #aeaeae;
+              border-width: 0.5px;
+              border-radius: 5px;
+              font-size: 17px;
+              padding: 10px;
+              color:  #4fc04d;
+              font-family: 'Montserrat', sans-serif; 
+              }
+              .nav input[type="submit"]{
+              width:40%;
+              border-style: none;
+              border-color: none;
+              border-radius: 3px;
+              font-size: 17px;
+              padding: 7px;
+              }
+              .nav input[type="submit"]:hover {
+              background-color: #4fc04d;
+              color: white;
+              }
+              #mapCanvas {
+              width: 100%;
+              height: 400px;
+              float: left;
+              }
+              #infoPanel {
+              float: left;
+              margin-left: 10px;
+              }
+              #infoPanel div {
+              margin-bottom: 5px;
+              }
+      </style></head>
+<body>
+    <div class="container-scroller">
+    <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+        <div class="text-center navbar-brand-wrapper">
+                <a class="navbar-brand brand-logo" href="index.html"><img src="/static/images/logo.PNG" alt="logo"></a>
+                <a class="navbar-brand brand-logo-mini" href="index.html"><img src="/static/images/logo_mini.svg" alt="logo"></a></div>
+        <div class="navbar-menu-wrapper d-flex align-items-center">
+        <p class="page-name d-none d-lg-block" style="font-family: Montserrat;font-size: 23px;font-weight:normal;color:#383737">Crime Prediction Using Neural Networks</p>
+        <ul class="navbar-nav ml-lg-auto">
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center ml-auto" type="button" data-toggle="offcanvas">
+        <span class="icon-menu icons"></span>
+        </button>
+        </div></nav>
+    <div class="container-fluid page-body-wrapper">
+    <div class="row row-offcanvas row-offcanvas-right">
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+        <li class="nav-item nav-category">
+        <span class="nav-link">GENERAL</span>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="/index">
+        <span class="menu-title">Dashboard</span>
+        <i class="icon-speedometer menu-icon"></i>
+        </a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="/graphs">
+        <span class="menu-title">Graphs</span>
+        <i class="icon-wrench menu-icon"></i>
+        </a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="/analysis">
+        <span class="menu-title">Analysis</span>
+        <i class="icon-layers menu-icon"></i>
+        </a>
+        </li>
+        </ul>
+        </nav>
+    <div class="content-wrapper">
+    <div class="row">
+    <div class="col-lg-12 grid-margin">
+    <div class="card overflow-hidden dashboard-curved-chart">
+    <div class="card-body mx-1">
+    <h2 class="card-title border-bottom-1" style="font-family: Montserrat">Enter the details here</h2>
+    <div id="chartLegend"></div>
+    <ul class="nav">
+      <form align="left" method="POST" action="{{url_for('predict')}}">
+        <center>
+        <table>
+        <tr>
+        <tr>
+      <!--   <td>
+        Select Season :
+        </td>
+        <td>
+        <select id="season" name="season">
+        <option selected disabled>Choose here</option>
+        <option>Summer</option>
+        <option>Fall</option>
+        <option>Winter</option>
+        <option>Spring</option>
+        </select>
+        </td> -->
+        <tr>
+        <td>
+        Select Date and Time :
+        </td>
+        <td>
+        <input type="text" value="2000-01-01 00:00:00" name="date">
+        </td>
+
+        <tr>
+        <td>
+        Enter District :
+        </td>
+        <td>
+        <select id="dist" name="dist">
+        <option selected disabled>Choose here</option>
+        {% for i in range(0,9) %}
+        <option value="{{district[i]}}" name="{{district[i]}}">{{district[i]}}</option>
+        {% endfor %}
+        </td>
+        <tr>
+        <tr>
+        <td colspan="2" align="center">
+        <br>
+        </td>
+        </table>
+        </center>
+    </ul>
+    </div>
+    <div class="col-lg-12 grid-margin">
+    <div class="card performance-cards">
+    <div class="card-body">
+    <h2 class="card-title" style="font-family: Montserrat">Map</h2>
+    <div class="row">
+    <div id="mapCanvas"></div>
+    <div id="infoPanel">
+    <b>Marker status:</b>
+    <div id="markerStatus"><i>Click and drag the marker.</i></div>
+    <b>Current position:</b>
+    <div id="info">
+    Lattitude: <input type="text" id="lat" name="lat" value="">
+    Longitude: <input type="text" id="long" name="long" value="">
+    </div>
+    <b>Closest matching address:</b>
+    <div><input type="text"  id="address" name="address" value=""></div>
+    </div>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyDBiToubfWH_iwhTEf3SRJnpQRDfERsBN8&callback=initialize"></script>
+    <script>
+            var geocoder = new google.maps.Geocoder();
+
+            function geocodePosition(pos) {
+            geocoder.geocode({
+            latLng: pos
+            }, function(responses) {
+            if (responses && responses.length > 0) {
+            updateMarkerAddress(responses[0].formatted_address);
+            } else {
+            updateMarkerAddress('Cannot determine address at this location.');
+            }
+            });
+            }
+
+            function updateMarkerStatus(str) {
+            document.getElementById('markerStatus').innerHTML = str;
+            }
+
+            function updateMarkerPosition(latLng) {
+            document.getElementById('lat').value = latLng.lat();
+            document.getElementById('long').value = latLng.lng();
+            }
+
+            function updateMarkerAddress(str) {
+            document.getElementById('address').value = str;
+            }
+
+            function initialize() {
+            var latLng = new google.maps.LatLng(37.755390,-122.388004);
+            var map = new google.maps.Map(document.getElementById('mapCanvas'), {
+            zoom: 14,
+            center: latLng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+            var marker = new google.maps.Marker({
+            position: latLng,
+            title: 'Point A',
+            map: map,
+            draggable: true
+            });
+            updateMarkerPosition(latLng);
+            geocodePosition(latLng);
+            google.maps.event.addListener(marker, 'dragstart', function() {
+            updateMarkerAddress('Dragging...');
+            });
+
+            google.maps.event.addListener(marker, 'drag', function() {
+            updateMarkerStatus('Dragging...');
+            updateMarkerPosition(marker.getPosition());
+            });
+
+            google.maps.event.addListener(marker, 'dragend', function() {
+            updateMarkerStatus('Drag ended');
+            geocodePosition(marker.getPosition());
+            });
+            }
+            google.maps.event.addDomListener(window, 'load', initialize);</script>
+    </div>
+    </div>
+    </div>
+    <div class="nav">
+    <input type="submit" value="Predict" href="/result" ></form>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <footer class="footer">
+    <div class="container-fluid clearfix">
+    <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2019 Crime Prediction Analysis</span>
+    </div>
+    </footer>
+    </div>
+    </div>
+    </div>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="node_modules/flot/jquery.flot.js"></script>
+    <script src="node_modules/flot/jquery.flot.resize.js"></script>
+    <script src="node_modules/flot.curvedlines/curvedLines.js"></script>
+    <script src="js/off-canvas.js"></script>
+    <script src="js/misc.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
